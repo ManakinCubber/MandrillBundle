@@ -40,36 +40,39 @@ class Configuration implements ConfigurationInterface
     /**
      * {@inheritDoc}
      */
-    public function getConfigTreeBuilder()
-    {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('slot_mandrill');
+public function getConfigTreeBuilder()
+{
+    $treeBuilder = new TreeBuilder('slot_mandrill');
+    // BC layer for symfony/config < 4.2
+    $rootNode = \method_exists($treeBuilder, 'getRootNode') ? $treeBuilder->getRootNode() : $treeBuilder->root('slot_mandrill');
 
-        $rootNode
+    $rootNode
         ->children()
-            ->arrayNode('default')
-                ->isRequired()
-                ->children()
-                    ->scalarNode('sender')->isRequired()->cannotBeEmpty()->end()
-                    ->scalarNode('sender_name')->defaultNull()->end()
-                    ->scalarNode('subaccount')->defaultNull()->end()
-                ->end()
-            ->end()
-            ->scalarNode('api_key')->defaultNull()->end()
-            ->scalarNode('disable_delivery')->defaultFalse()->end()
-            ->scalarNode('debug')->defaultFalse()->end()
-            ->arrayNode('proxy')
-                ->addDefaultsIfNotSet()
-                ->children()
-                    ->booleanNode('use')->defaultFalse()->end()
-                    ->scalarNode('host')->defaultNull()->end()
-                    ->scalarNode('port')->defaultNull()->end()
-                    ->scalarNode('user')->defaultNull()->end()
-                    ->scalarNode('password')->defaultNull()->end()
-                ->end()
-            ->end()
+        ->arrayNode('default')
+        ->isRequired()
+        ->children()
+        ->scalarNode('sender')->isRequired()->cannotBeEmpty()->end()
+        ->scalarNode('sender_name')->defaultNull()->end()
+        ->scalarNode('subaccount')->defaultNull()->end()
+        ->end()
+        ->end()
+        ->scalarNode('api_key')->defaultNull()->end()
+        ->scalarNode('disable_delivery')->defaultFalse()->end()
+        ->scalarNode('debug')->defaultFalse()->end()
+        ->arrayNode('proxy')
+        ->addDefaultsIfNotSet()
+        ->children()
+        ->booleanNode('use')->defaultFalse()->end()
+        ->scalarNode('host')->defaultNull()->end()
+        ->scalarNode('port')->defaultNull()->end()
+        ->scalarNode('user')->defaultNull()->end()
+        ->scalarNode('password')->defaultNull()->end()
+        ->end()
+        ->end()
         ->end();
+    ;
+    ;
 
-        return $treeBuilder;
-    }
+    return $treeBuilder;
+}
 }
